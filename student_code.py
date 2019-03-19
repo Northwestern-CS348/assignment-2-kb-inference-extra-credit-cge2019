@@ -141,8 +141,55 @@ class KnowledgeBase(object):
             string explaining hierarchical support from other Facts and rules
         """
         ####################################################
-        # Student code goes here
+        # do this
+        output = self.kb_format_explain(fact_or_rule, 0)
+        print(output)
+        return output
 
+    def kb_format_explain(self, fact_or_rule, spaces):
+        
+        indent = " "*spaces
+        curr_line = indent
+
+        statement = ""
+
+        #if ar ule is passed
+        if isinstance(fact_or_rule, Rule):
+            if self._get_rule(fact_or_rule):
+                line = 1
+                statement = self._get_rule(fact_or_rule)
+
+                for s in statement.lhs:
+                    if line == 1:
+                        curr_line += "rule: ("
+                        line += 1
+                    else:
+                        curr_line += ", "
+                    curr_line += str(s)
+                curr_line += ") -> "+ str(statement.rhs)
+            else:
+                return
+        #given rule
+        elif isinstance(fact_or_rule, Fact):
+            if self._get_fact(fact_or_rule):
+                statement = self._get_fact(fact_or_rule)
+                curr_line += "fact: " + str(statement.statement)
+            else:
+                return
+
+
+              
+        if statement.asserted:
+            curr_line += " ASSERTED"
+        
+        curr_line += "\n"
+
+        if statement.supported_by:
+            for support in statement.supported_by:
+                curr_line += indent + "  SUPPORTED BY" + "\n"
+                for i in range(1):
+                    curr_line += self.kb_format_explain(support[i], spaces + 4)
+        return curr_line
 
 class InferenceEngine(object):
     def fc_infer(self, fact, rule, kb):
