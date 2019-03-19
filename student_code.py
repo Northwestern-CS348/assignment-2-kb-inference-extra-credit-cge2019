@@ -168,17 +168,14 @@ class KnowledgeBase(object):
                     curr_line += str(s)
                 curr_line += ") -> "+ str(statement.rhs)
             else:
-                return
+                return "Rule is not in the KB"
         #given rule
         elif isinstance(fact_or_rule, Fact):
             if self._get_fact(fact_or_rule):
                 statement = self._get_fact(fact_or_rule)
                 curr_line += "fact: " + str(statement.statement)
             else:
-                return
-
-
-              
+                return "Fact is not in the KB"
         if statement.asserted:
             curr_line += " ASSERTED"
         
@@ -187,7 +184,7 @@ class KnowledgeBase(object):
         if statement.supported_by:
             for support in statement.supported_by:
                 curr_line += indent + "  SUPPORTED BY" + "\n"
-                for i in range(1):
+                for i in range(2):
                     curr_line += self.kb_format_explain(support[i], spaces + 4)
         return curr_line
 
